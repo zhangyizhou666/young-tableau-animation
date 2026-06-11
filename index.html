@@ -468,16 +468,16 @@
 
         <g id="explodedTexts" class="fade">
           <rect class="panel" x="930" y="188" width="585" height="620" rx="12" />
-          <text class="stage-title" x="970" y="240">Semi-standard vs standard</text>
-          <text class="label green-text" x="970" y="302">Semi-standard Young tableau</text>
-          <text class="small" x="970" y="342">Rows are weakly increasing: ≤ may appear.</text>
-          <text class="small" x="970" y="382">Columns are strictly increasing: only &lt; downward.</text>
-          <text class="small red-text" x="970" y="424">Red marks show repeated row entries.</text>
-          <text class="label" x="970" y="490">Standard Young tableau</text>
-          <text class="definition-line" x="970" y="532">"entries are the numbers from 1 to n,"</text>
-          <text class="definition-line" x="970" y="570">"each occurring once"</text>
-          <text class="small" x="970" y="602">So standard tableaux do not allow repeats.</text>
-          <text class="source" x="970" y="792">Fulton, Notation, pp. 2-3</text>
+          <text class="stage-title" x="970" y="240">Young tableau rules</text>
+          <text class="label green-text" x="970" y="302">Rows</text>
+          <text class="definition-line" x="970" y="346">"weakly increasing across each row"</text>
+          <text class="small red-text" x="970" y="390">Equality can appear across a row.</text>
+          <text class="label blue-text" x="970" y="462">Columns</text>
+          <text class="definition-line" x="970" y="506">"strictly increasing down each column"</text>
+          <text class="small" x="970" y="550">Every downward comparison is strict.</text>
+          <text class="label" x="970" y="622">Shape</text>
+          <text class="small" x="970" y="666">shape(T) = (4, 3, 3, 2)</text>
+          <text class="source" x="970" y="792">Fulton, Notation, pp. 1-2</text>
         </g>
 
         <g id="ssytExamplesTexts" class="fade">
@@ -552,9 +552,9 @@
       diagram: ["Young Diagram", "A partition drawn as left-justified rows of boxes."],
       filling: ["Young Tableau", "A Young diagram becomes a tableau once entries are filled in."],
       tableau: ["Young Tableau", "The filled shape must obey row and column rules."],
+      exploded: ["Young Tableau", "Separate the boxes to see the row and column rules."],
       semistandard: ["Semi-Standard Young Tableau", "A semi-standard Young tableau has weak rows and strict columns."],
       ssytExamples: ["Semi-Standard Young Tableau", "Examples with weak row increase and strict column increase."],
-      exploded: ["Semi-Standard Young Tableau", "The ≤ signs explain why repeated row entries are allowed."],
       standardExamples: ["Standard Young Tableau", "A standard Young tableau uses 1 to n, each occurring exactly once."],
       subset: ["Standard Young Tableau", "A standard tableau is a special semi-standard tableau."],
     };
@@ -568,9 +568,9 @@
       "diagram",
       "filling",
       "tableau",
+      "exploded",
       "semistandard",
       "ssytExamples",
-      "exploded",
       "standardExamples",
       "subset",
     ];
@@ -847,7 +847,7 @@
       storageLabels.style.opacity = stage === "storage" ? "1" : "0";
       rowLabels.style.opacity = stage === "partition" ? "1" : "0";
       duplicateMarkers.style.opacity = stage === "semistandard" ? "1" : "0";
-      standardMini.style.opacity = stage === "exploded" ? "1" : "0";
+      standardMini.style.opacity = "0";
       ssytExamplesLayer.style.opacity = stage === "ssytExamples" ? "1" : "0";
       standardExamplesLayer.style.opacity = stage === "standardExamples" ? "1" : "0";
       comparisons.querySelectorAll(".comparison").forEach((node) => {
