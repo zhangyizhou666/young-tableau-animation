@@ -1,0 +1,785 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Young Tableau Animation</title>
+  <style>
+    :root {
+      --ink: #111827;
+      --muted: #475569;
+      --line: #1f2937;
+      --panel: #f8fafc;
+      --blue: #2563eb;
+      --green: #16a34a;
+      --teal: #0d9488;
+      --orange: #f97316;
+      --red: #dc2626;
+      --light-blue: #dbeafe;
+      --light-green: #dcfce7;
+      --light-teal: #ccfbf1;
+      --light-orange: #ffedd5;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #e5e7eb;
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      display: grid;
+      place-items: center;
+    }
+
+    .shell {
+      width: min(100vw, 1600px);
+      padding: 16px;
+    }
+
+    .stage-wrap {
+      background: white;
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      box-shadow: 0 18px 45px rgb(15 23 42 / 0.18);
+      overflow: hidden;
+    }
+
+    svg {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      display: block;
+      background: white;
+    }
+
+    text {
+      fill: var(--ink);
+      paint-order: stroke;
+      stroke: transparent;
+      dominant-baseline: central;
+    }
+
+    .title {
+      font-size: 52px;
+      font-weight: 800;
+    }
+
+    .subtitle {
+      font-size: 25px;
+      fill: var(--muted);
+    }
+
+    .stage-title {
+      font-size: 30px;
+      font-weight: 800;
+    }
+
+    .label {
+      font-size: 21px;
+      font-weight: 700;
+    }
+
+    .storage-label {
+      fill: white;
+      stroke: none;
+      font-size: 21px;
+      font-weight: 800;
+    }
+
+    .blue-text {
+      fill: var(--blue);
+    }
+
+    .green-text {
+      fill: var(--green);
+    }
+
+    .red-text {
+      fill: var(--red);
+    }
+
+    .small {
+      font-size: 18px;
+      fill: var(--muted);
+    }
+
+    .tiny {
+      font-size: 15px;
+      fill: var(--muted);
+    }
+
+    .quote {
+      font-size: 19px;
+      font-weight: 750;
+      fill: var(--ink);
+    }
+
+    .quote.green-text {
+      fill: var(--green);
+    }
+
+    .quote.blue-text {
+      fill: var(--blue);
+    }
+
+    .small.red-text {
+      fill: var(--red);
+    }
+
+    .source {
+      font-size: 14px;
+      fill: var(--muted);
+    }
+
+    .formula {
+      font-size: 34px;
+      font-weight: 800;
+    }
+
+    .rule {
+      font-size: 28px;
+      font-weight: 800;
+    }
+
+    .symbol {
+      font-size: 34px;
+      font-weight: 900;
+    }
+
+    .cell {
+      transition:
+        transform 900ms cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 300ms ease;
+    }
+
+    .cell rect {
+      transition:
+        fill 450ms ease,
+        stroke 450ms ease,
+        stroke-width 450ms ease,
+        rx 450ms ease;
+    }
+
+    .cell text {
+      transition: opacity 300ms ease, fill 300ms ease;
+      font-size: 30px;
+      font-weight: 800;
+    }
+
+    .cell text.repeat-text {
+      fill: var(--red);
+    }
+
+    .fade {
+      opacity: 0;
+      transition: opacity 350ms ease;
+    }
+
+    .panel {
+      fill: var(--panel);
+      stroke: #cbd5e1;
+      stroke-width: 2;
+    }
+
+    .comparison {
+      opacity: 0;
+      transition: opacity 300ms ease;
+    }
+
+    .comparison.visible {
+      opacity: 1;
+    }
+
+    .rowSign {
+      fill: var(--green);
+    }
+
+    .columnSign {
+      fill: var(--blue);
+    }
+
+    .equalSign {
+      fill: var(--red);
+    }
+
+    .duplicate-marker {
+      opacity: 0;
+      transition: opacity 300ms ease;
+    }
+
+    .duplicate-marker text {
+      fill: var(--red);
+      font-size: 30px;
+      font-weight: 900;
+    }
+
+    .mini-cell rect {
+      fill: white;
+      stroke: #334155;
+      stroke-width: 1.6;
+    }
+
+    .mini-cell text {
+      fill: var(--ink);
+      font-size: 15px;
+      font-weight: 800;
+    }
+
+    .fly-number {
+      opacity: 0;
+      fill: var(--ink);
+      font-size: 30px;
+      font-weight: 800;
+      transition:
+        transform 1050ms cubic-bezier(0.2, 0.9, 0.2, 1),
+        opacity 450ms ease;
+    }
+
+    .fly-number.visible {
+      opacity: 1;
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 12px 14px 0;
+    }
+
+    .buttons {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      appearance: none;
+      border: 1px solid #cbd5e1;
+      background: white;
+      color: var(--ink);
+      border-radius: 8px;
+      padding: 9px 14px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    button:hover {
+      border-color: var(--blue);
+      color: var(--blue);
+    }
+
+    .steps {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 360px;
+      justify-content: flex-end;
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      background: #cbd5e1;
+      transition: width 250ms ease, background 250ms ease;
+    }
+
+    .dot.active {
+      width: 34px;
+      background: var(--blue);
+    }
+
+    @media (max-width: 900px) {
+      .shell {
+        padding: 8px;
+      }
+
+      .controls {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .steps {
+        min-width: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <div class="stage-wrap">
+      <svg id="stage" viewBox="0 0 1600 900" role="img" aria-label="Animated explanation from storage partition to Young tableau">
+        <text id="mainTitle" class="title" x="75" y="70">From storage partition to Young Tableau</text>
+        <text id="subTitle" class="subtitle" x="78" y="118">12 = 4 + 3 + 3 + 2 becomes a Young diagram of shape (4, 3, 3, 2)</text>
+
+        <g id="introTexts" class="fade">
+          <rect class="panel" x="235" y="150" width="1130" height="660" rx="18" />
+          <image href="iphone_storage_reference.jpg" x="495" y="178" width="610" height="476" preserveAspectRatio="xMidYMid meet" />
+          <text class="stage-title" x="800" y="700" text-anchor="middle">Everyday storage already has partitions</text>
+          <text class="small" x="800" y="742" text-anchor="middle">Next: abstract the colored storage blocks into a partition of 12.</text>
+        </g>
+
+        <g id="storageTexts" class="fade">
+          <rect class="panel" x="150" y="210" width="1300" height="430" rx="12" />
+          <text class="stage-title" x="205" y="270">Storage example</text>
+          <text class="formula" x="205" y="326">12 GB storage</text>
+          <text class="small" x="205" y="545">A whole object is divided into non-overlapping positive pieces.</text>
+          <text class="formula" x="930" y="548">λ = (4, 3, 3, 2) ⊢ 12</text>
+          <rect class="panel" x="895" y="260" width="485" height="126" rx="12" />
+          <text class="label" x="930" y="292">Partition</text>
+          <text class="quote" x="930" y="324">"a sequence of weakly decreasing</text>
+          <text class="quote" x="930" y="350">positive integers"</text>
+          <text class="source" x="930" y="374">Fulton, Notation, p. 1</text>
+        </g>
+
+        <g id="partitionTexts" class="fade">
+          <text class="stage-title" x="150" y="212">Partition rows</text>
+          <text class="formula" x="150" y="268">λ = (4, 3, 3, 2) ⊢ 12</text>
+          <text class="small" x="150" y="322">Each part becomes one row length.</text>
+          <path d="M760 535 L1000 535" stroke="#2563eb" stroke-width="4" marker-end="url(#arrow)" />
+          <text class="label blue-text" x="820" y="497">row lengths</text>
+          <rect class="panel" x="1060" y="230" width="360" height="170" rx="12" />
+          <text class="label" x="1090" y="272">Notation</text>
+          <text class="quote" x="1090" y="314">λ ⊢ n</text>
+          <text class="small" x="1090" y="354">λ partitions the integer n.</text>
+        </g>
+
+        <g id="diagramTexts" class="fade">
+          <text class="stage-title" x="965" y="252">Young Diagram</text>
+          <text class="small" x="965" y="302">shape only, no numbers yet</text>
+          <rect class="panel" x="935" y="335" width="500" height="190" rx="12" />
+          <text class="label" x="970" y="376">Book definition</text>
+          <text class="quote" x="970" y="418">"collection of boxes, or cells"</text>
+          <text class="quote" x="970" y="452">in "left-justified rows"</text>
+          <text class="source" x="970" y="492">Fulton, Notation, p. 1</text>
+          <text class="formula" x="965" y="610">shape(λ) = (4, 3, 3, 2)</text>
+          <text class="small" x="965" y="660">4 + 3 + 3 + 2 = 12 boxes</text>
+        </g>
+
+        <g id="tableauTexts" class="fade">
+          <text class="stage-title" x="940" y="245">Young Tableau</text>
+          <text class="small" x="940" y="292">Fill the Young diagram with entries.</text>
+          <rect class="panel" x="930" y="345" width="520" height="210" rx="12" />
+          <text class="label" x="965" y="388">Fulton tableau condition</text>
+          <text class="quote green-text" x="965" y="430">"weakly increasing across each row"</text>
+          <text class="quote blue-text" x="965" y="472">"strictly increasing down each column"</text>
+          <text class="source" x="965" y="520">Fulton, Notation, p. 2</text>
+        </g>
+
+        <g id="fillingTexts" class="fade">
+          <text class="stage-title" x="940" y="245">Fill the diagram</text>
+          <text class="small" x="940" y="292">The entries fly into the Young diagram.</text>
+          <text class="rule green-text" x="940" y="395">Rows may repeat: ≤</text>
+          <text class="rule blue-text" x="940" y="450">Columns must increase: &lt;</text>
+        </g>
+
+        <g id="semistandardTexts" class="fade">
+          <text class="stage-title" x="910" y="220">This is a semi-standard Young tableau</text>
+          <text class="small" x="910" y="270">The numbers have flown into a Young diagram and obey the tableau rules.</text>
+          <rect class="panel" x="910" y="325" width="555" height="295" rx="12" />
+          <text class="label" x="945" y="370">Why semi-standard?</text>
+          <text class="small" x="945" y="413">Rows are weakly increasing, so equality is allowed.</text>
+          <text class="rule red-text" x="945" y="463">1 ≤ 1 and 3 ≤ 3</text>
+          <text class="small" x="945" y="514">Columns still strictly increase from top to bottom.</text>
+          <text class="tiny" x="945" y="570">Fulton calls these tableaux; common terminology calls</text>
+          <text class="tiny" x="945" y="596">them semi-standard Young tableaux.</text>
+        </g>
+
+        <g id="explodedTexts" class="fade">
+          <rect class="panel" x="930" y="188" width="585" height="620" rx="12" />
+          <text class="stage-title" x="970" y="240">Semi-standard vs standard</text>
+          <text class="label green-text" x="970" y="302">Semi-standard Young tableau</text>
+          <text class="small" x="970" y="342">Rows are weakly increasing: ≤ may appear.</text>
+          <text class="small" x="970" y="382">Columns are strictly increasing: only &lt; downward.</text>
+          <text class="small red-text" x="970" y="424">Red marks show repeated row entries.</text>
+          <text class="label" x="970" y="490">Standard Young tableau</text>
+          <text class="small" x="970" y="530">Entries are "numbers from 1 to n,</text>
+          <text class="small" x="970" y="562">each occurring once."</text>
+          <text class="small" x="970" y="602">So standard tableaux do not allow repeats.</text>
+          <text class="source" x="970" y="792">Fulton, Notation, pp. 2-3</text>
+        </g>
+
+        <defs>
+          <marker id="arrow" markerWidth="14" markerHeight="14" refX="10" refY="5" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#2563eb" />
+          </marker>
+        </defs>
+
+        <g id="cells"></g>
+        <g id="flyingNumbers"></g>
+        <g id="rowLabels" class="fade"></g>
+        <g id="storageLabels" class="fade"></g>
+        <g id="comparisons"></g>
+        <g id="duplicateMarkers" class="duplicate-marker"></g>
+        <g id="standardMini" class="fade"></g>
+      </svg>
+    </div>
+
+    <div class="controls">
+      <div class="buttons">
+        <button id="prevBtn" type="button">Back</button>
+        <button id="playBtn" type="button">Play</button>
+        <button id="nextBtn" type="button">Next</button>
+        <button id="resetBtn" type="button">Reset</button>
+      </div>
+      <div id="steps" class="steps" aria-label="Animation progress"></div>
+    </div>
+  </main>
+
+  <script>
+    const SVG_NS = "http://www.w3.org/2000/svg";
+    const shape = [4, 3, 3, 2];
+    const values = [
+      [1, 1, 2, 4],
+      [2, 3, 3],
+      [3, 4, 5],
+      [4, 5],
+    ];
+    const standardValues = [
+      [1, 2, 3, 4],
+      [5, 6, 7],
+      [8, 9, 10],
+      [11, 12],
+    ];
+    const repeatedRowCells = new Set(["0,0", "0,1", "1,1", "1,2"]);
+    const rowColors = ["#2563eb", "#16a34a", "#0d9488", "#f97316"];
+    const rowLight = ["#dbeafe", "#dcfce7", "#ccfbf1", "#ffedd5"];
+    const stages = ["intro", "storage", "partition", "diagram", "filling", "tableau", "semistandard", "exploded"];
+    const cellSize = 66;
+    const cells = [];
+    let order = 0;
+    let stageIndex = 0;
+    let playing = false;
+    let timer = null;
+
+    const svg = document.querySelector("#stage");
+    const cellLayer = document.querySelector("#cells");
+    const flyingNumberLayer = document.querySelector("#flyingNumbers");
+    const storageLabels = document.querySelector("#storageLabels");
+    const rowLabels = document.querySelector("#rowLabels");
+    const comparisons = document.querySelector("#comparisons");
+    const duplicateMarkers = document.querySelector("#duplicateMarkers");
+    const standardMini = document.querySelector("#standardMini");
+    const playBtn = document.querySelector("#playBtn");
+
+    function makeSvg(tag, attrs = {}) {
+      const node = document.createElementNS(SVG_NS, tag);
+      for (const [key, value] of Object.entries(attrs)) {
+        node.setAttribute(key, value);
+      }
+      return node;
+    }
+
+    function addText(parent, text, x, y, className, fill) {
+      const node = makeSvg("text", { x, y, class: className });
+      if (fill) node.setAttribute("fill", fill);
+      node.textContent = text;
+      parent.appendChild(node);
+      return node;
+    }
+
+    function positionFor(cell, stage) {
+      const { row, col, flat } = cell;
+      if (stage === "intro") return { x: 395 + flat * cellSize, y: 380 };
+      if (stage === "storage") return { x: 395 + flat * cellSize, y: 400 };
+      if (stage === "partition") return { x: 355 + col * cellSize, y: 345 + row * 102 };
+      if (stage === "diagram") return { x: 650 + col * cellSize, y: 280 + row * cellSize };
+      if (stage === "filling") return { x: 610 + col * cellSize, y: 280 + row * cellSize };
+      if (stage === "tableau") return { x: 610 + col * cellSize, y: 280 + row * cellSize };
+      if (stage === "semistandard") return { x: 610 + col * cellSize, y: 280 + row * cellSize };
+      return { x: 300 + col * 132, y: 230 + row * 120 };
+    }
+
+    function fillFor(cell, stage) {
+      if (stage === "storage" || stage === "partition" || stage === "diagram") {
+        return rowColors[cell.row];
+      }
+      return rowLight[cell.row];
+    }
+
+    function strokeFor(stage) {
+      if (stage === "storage") return "#ffffff";
+      return "#1f2937";
+    }
+
+    function initCells() {
+      shape.forEach((length, row) => {
+        for (let col = 0; col < length; col += 1) {
+          const g = makeSvg("g", { class: "cell" });
+          const rect = makeSvg("rect", {
+            x: 0,
+            y: 0,
+            width: cellSize,
+            height: cellSize,
+            rx: 0,
+            fill: rowColors[row],
+            stroke: "#ffffff",
+            "stroke-width": 2,
+          });
+          const text = makeSvg("text", {
+            x: cellSize / 2,
+            y: cellSize / 2 + 1,
+            "text-anchor": "middle",
+            class: "cellValue",
+            opacity: 0,
+          });
+          text.textContent = values[row][col];
+          g.append(rect, text);
+          cellLayer.appendChild(g);
+          const fly = makeSvg("text", {
+            x: 0,
+            y: 0,
+            "text-anchor": "middle",
+            class: "fly-number",
+          });
+          fly.textContent = values[row][col];
+          flyingNumberLayer.appendChild(fly);
+          cells.push({ row, col, flat: order, group: g, rect, text, fly });
+          order += 1;
+        }
+      });
+    }
+
+    function airbornePositionFor(cell) {
+      const band = cell.flat % 4;
+      return {
+        x: 415 + cell.flat * 66,
+        y: 180 + band * 24,
+      };
+    }
+
+    function initStorageLabels() {
+      const starts = [0, 4, 7, 10];
+      const labels = ["4 GB", "3 GB", "3 GB", "2 GB"];
+      shape.forEach((length, row) => {
+        const x = 395 + starts[row] * cellSize + (length * cellSize) / 2;
+        addText(storageLabels, labels[row], x, 433, "storage-label", "white").setAttribute("text-anchor", "middle");
+      });
+    }
+
+    function initRowLabels() {
+      shape.forEach((length, row) => {
+        const y = 345 + row * 102 + cellSize / 2;
+        addText(rowLabels, `λ${row + 1} = ${length}`, 235, y, "label", "#111827").setAttribute("text-anchor", "start");
+      });
+    }
+
+    function initComparisons() {
+      shape.forEach((length, row) => {
+        for (let col = 0; col < length - 1; col += 1) {
+          const sign = values[row][col] < values[row][col + 1] ? "<" : "≤";
+          const x = 300 + col * 132 + cellSize + 33;
+          const y = 230 + row * 120 + cellSize / 2;
+          const signClass = sign === "≤" ? "symbol comparison rowSign equalSign" : "symbol comparison rowSign";
+          const text = addText(comparisons, sign, x, y, signClass, "#16a34a");
+          text.setAttribute("text-anchor", "middle");
+        }
+      });
+
+      for (let row = 0; row < shape.length - 1; row += 1) {
+        for (let col = 0; col < Math.min(shape[row], shape[row + 1]); col += 1) {
+          const x = 300 + col * 132 + cellSize / 2;
+          const y = 230 + row * 120 + cellSize + 27;
+          const text = addText(comparisons, "<", x, y, "symbol comparison columnSign", "#2563eb");
+          text.setAttribute("text-anchor", "middle");
+          text.setAttribute("transform", `rotate(90 ${x} ${y})`);
+        }
+      }
+    }
+
+    function initDuplicateMarkers() {
+      const pairs = [
+        { row: 0, col: 0, sign: "1 ≤ 1", placement: "above" },
+        { row: 1, col: 1, sign: "3 ≤ 3", placement: "right" },
+      ];
+
+      pairs.forEach((pair) => {
+        const x = 610 + pair.col * cellSize - 6;
+        const y = 280 + pair.row * cellSize - 6;
+        const labelX = pair.placement === "right" ? x + cellSize * 2 + 52 : x + cellSize + 3;
+        const labelY = pair.placement === "right" ? y + cellSize / 2 + 6 : y - 22;
+        const text = addText(
+          duplicateMarkers,
+          pair.sign,
+          labelX,
+          labelY,
+          "red-text",
+          "#dc2626",
+        );
+        text.setAttribute("text-anchor", "middle");
+      });
+    }
+
+    function initStandardMini() {
+      addText(standardMini, "standard example", 1222, 642, "tiny", "#475569").setAttribute("text-anchor", "middle");
+      const mini = 28;
+      const originX = 1166;
+      const originY = 666;
+      standardValues.forEach((rowValues, row) => {
+        rowValues.forEach((value, col) => {
+          const g = makeSvg("g", { class: "mini-cell" });
+          const rect = makeSvg("rect", {
+            x: originX + col * mini,
+            y: originY + row * mini,
+            width: mini,
+            height: mini,
+          });
+          const text = makeSvg("text", {
+            x: originX + col * mini + mini / 2,
+            y: originY + row * mini + mini / 2 + 1,
+            "text-anchor": "middle",
+          });
+          text.textContent = value;
+          g.append(rect, text);
+          standardMini.appendChild(g);
+        });
+      });
+    }
+
+    function setOpacity(id, on) {
+      document.querySelector(id).style.opacity = on ? "1" : "0";
+    }
+
+    function updateLabels(stage) {
+      setOpacity("#introTexts", stage === "intro");
+      setOpacity("#storageTexts", stage === "storage");
+      setOpacity("#partitionTexts", stage === "partition");
+      setOpacity("#diagramTexts", stage === "diagram");
+      setOpacity("#fillingTexts", stage === "filling");
+      setOpacity("#tableauTexts", stage === "tableau");
+      setOpacity("#semistandardTexts", stage === "semistandard");
+      setOpacity("#explodedTexts", stage === "exploded");
+      storageLabels.style.opacity = stage === "storage" ? "1" : "0";
+      rowLabels.style.opacity = stage === "partition" ? "1" : "0";
+      duplicateMarkers.style.opacity = stage === "semistandard" ? "1" : "0";
+      standardMini.style.opacity = stage === "exploded" ? "1" : "0";
+      comparisons.querySelectorAll(".comparison").forEach((node) => {
+        node.classList.toggle("visible", stage === "exploded");
+      });
+    }
+
+    function updateCells(stage) {
+      cells.forEach((cell) => {
+        const pos = positionFor(cell, stage);
+        const repeated = repeatedRowCells.has(`${cell.row},${cell.col}`);
+        const markRepeated = repeated && (stage === "semistandard" || stage === "exploded");
+        cell.group.style.transform = `translate(${pos.x}px, ${pos.y}px)`;
+        cell.group.style.opacity = stage === "intro" ? 0 : 1;
+        cell.rect.setAttribute("fill", fillFor(cell, stage));
+        cell.rect.setAttribute("stroke", markRepeated ? "#dc2626" : strokeFor(stage));
+        cell.rect.setAttribute("stroke-width", markRepeated ? 4 : (stage === "storage" ? 2 : 2.4));
+        cell.rect.setAttribute("rx", stage === "storage" ? 8 : 0);
+        cell.text.setAttribute("opacity", stage === "tableau" || stage === "semistandard" || stage === "exploded" ? 1 : 0);
+        cell.text.classList.toggle("repeat-text", markRepeated);
+
+        const target = positionFor(cell, "tableau");
+        const sky = airbornePositionFor(cell);
+        const flyPos = stage === "filling"
+          ? { x: target.x + cellSize / 2, y: target.y + cellSize / 2 + 1 }
+          : sky;
+        cell.fly.style.transform = `translate(${flyPos.x}px, ${flyPos.y}px)`;
+        cell.fly.classList.toggle("visible", stage === "filling");
+      });
+    }
+
+    function updateDots() {
+      document.querySelectorAll(".dot").forEach((dot, index) => {
+        dot.classList.toggle("active", index === stageIndex);
+      });
+    }
+
+    function goTo(index) {
+      stageIndex = Math.max(0, Math.min(stages.length - 1, index));
+      const stage = stages[stageIndex];
+      updateLabels(stage);
+      updateCells(stage);
+      updateDots();
+      if (stageIndex === stages.length - 1 && playing) stop();
+    }
+
+    function next() {
+      goTo(stageIndex + 1);
+    }
+
+    function prev() {
+      goTo(stageIndex - 1);
+    }
+
+    function stop() {
+      playing = false;
+      playBtn.textContent = "Play";
+      if (timer) window.clearInterval(timer);
+      timer = null;
+    }
+
+    function play() {
+      if (playing) {
+        stop();
+        return;
+      }
+      if (stageIndex === stages.length - 1) goTo(0);
+      playing = true;
+      playBtn.textContent = "Pause";
+      timer = window.setInterval(() => {
+        if (stageIndex < stages.length - 1) next();
+        else stop();
+      }, 2100);
+    }
+
+    function initDots() {
+      const steps = document.querySelector("#steps");
+      stages.forEach(() => {
+        steps.appendChild(document.createElement("span")).className = "dot";
+      });
+    }
+
+    initCells();
+    initStorageLabels();
+    initRowLabels();
+    initComparisons();
+    initDuplicateMarkers();
+    initStandardMini();
+    initDots();
+    goTo(0);
+
+    document.querySelector("#nextBtn").addEventListener("click", () => {
+      stop();
+      next();
+    });
+    document.querySelector("#prevBtn").addEventListener("click", () => {
+      stop();
+      prev();
+    });
+    document.querySelector("#resetBtn").addEventListener("click", () => {
+      stop();
+      goTo(0);
+    });
+    playBtn.addEventListener("click", play);
+
+    window.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowRight") {
+        stop();
+        next();
+      }
+      if (event.key === "ArrowLeft") {
+        stop();
+        prev();
+      }
+      if (event.key === " ") {
+        event.preventDefault();
+        play();
+      }
+      if (event.key.toLowerCase() === "r") {
+        stop();
+        goTo(0);
+      }
+    });
+  </script>
+</body>
+</html>
