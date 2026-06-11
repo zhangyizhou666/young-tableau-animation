@@ -117,6 +117,24 @@
       fill: var(--ink);
     }
 
+    .definition-term {
+      font-size: 25px;
+      font-weight: 850;
+      fill: var(--ink);
+    }
+
+    .definition-line {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 25px;
+      fill: var(--ink);
+    }
+
+    .definition-note {
+      font-size: 20px;
+      font-weight: 750;
+      fill: var(--muted);
+    }
+
     .quote.green-text {
       fill: var(--green);
     }
@@ -380,11 +398,11 @@
           <text class="formula" x="205" y="326">12 GB storage</text>
           <text class="small" x="205" y="545">A whole object is divided into non-overlapping positive pieces.</text>
           <text class="formula" x="930" y="548">λ = (4, 3, 3, 2) ⊢ 12</text>
-          <rect class="panel" x="895" y="260" width="485" height="126" rx="12" />
-          <text class="label" x="930" y="292">Partition</text>
-          <text class="quote" x="930" y="324">"a sequence of weakly decreasing</text>
-          <text class="quote" x="930" y="350">positive integers"</text>
-          <text class="source" x="930" y="374">Fulton, Notation, p. 1</text>
+          <rect class="panel" x="840" y="235" width="610" height="168" rx="12" />
+          <text class="definition-term" x="875" y="276">Partition notation</text>
+          <text class="definition-line" x="875" y="319">A partition of n is a sequence</text>
+          <text class="definition-line" x="875" y="357">λ = (λ1, ..., λm) with λ1 ≥ ... ≥ λm &gt; 0.</text>
+          <text class="source" x="875" y="386">Here: λ = (4, 3, 3, 2) ⊢ 12.</text>
         </g>
 
         <g id="partitionTexts" class="fade">
@@ -393,51 +411,61 @@
           <text class="small" x="150" y="322">Each part becomes one row length.</text>
           <path d="M760 535 L1000 535" stroke="#2563eb" stroke-width="4" marker-end="url(#arrow)" />
           <text class="label blue-text" x="820" y="497">row lengths</text>
-          <rect class="panel" x="1060" y="230" width="360" height="170" rx="12" />
-          <text class="label" x="1090" y="272">Notation</text>
-          <text class="quote" x="1090" y="314">λ ⊢ n</text>
-          <text class="small" x="1090" y="354">λ partitions the integer n.</text>
+          <rect class="panel" x="905" y="205" width="600" height="228" rx="12" />
+          <text class="definition-term" x="940" y="250">Partition notation</text>
+          <text class="definition-line" x="940" y="295">A partition of n is a sequence λ = (λ1, ..., λm)</text>
+          <text class="definition-line" x="940" y="333">such that λ1 ≥ λ2 ≥ ... ≥ λm &gt; 0.</text>
+          <text class="definition-line" x="940" y="371">We write λ ⊢ n when |λ| = λ1 + ... + λm = n.</text>
+          <text class="source" x="940" y="407">For this slide: |λ| = 4 + 3 + 3 + 2 = 12.</text>
         </g>
 
         <g id="diagramTexts" class="fade">
-          <text class="stage-title" x="965" y="252">Young Diagram</text>
-          <text class="small" x="965" y="302">shape only, no numbers yet</text>
-          <rect class="panel" x="935" y="335" width="500" height="190" rx="12" />
-          <text class="label" x="970" y="376">Book definition</text>
-          <text class="quote" x="970" y="418">"collection of boxes, or cells"</text>
-          <text class="quote" x="970" y="452">in "left-justified rows"</text>
-          <text class="source" x="970" y="492">Fulton, Notation, p. 1</text>
-          <text class="formula" x="965" y="610">shape(λ) = (4, 3, 3, 2)</text>
-          <text class="small" x="965" y="660">4 + 3 + 3 + 2 = 12 boxes</text>
+          <text class="stage-title" x="965" y="222">Young Diagram</text>
+          <text class="small" x="965" y="266">shape only, no numbers yet</text>
+          <rect class="panel" x="925" y="305" width="605" height="330" rx="12" />
+          <text class="definition-term" x="960" y="350">Young diagram</text>
+          <text class="definition-line" x="960" y="393">A Young diagram is a collection of boxes arranged</text>
+          <text class="definition-line" x="960" y="431">in left-justified rows, with row lengths weakly</text>
+          <text class="definition-line" x="960" y="469">decreasing from top to bottom.</text>
+          <text class="definition-term blue-text" x="960" y="528">Shape</text>
+          <text class="definition-line" x="960" y="570">This diagram has shape λ = (4, 3, 3, 2).</text>
+          <text class="source" x="960" y="610">The 12 boxes come from |λ| = 4 + 3 + 3 + 2.</text>
         </g>
 
         <g id="tableauTexts" class="fade">
-          <text class="stage-title" x="940" y="245">Young Tableau</text>
-          <text class="small" x="940" y="292">Fill the Young diagram with entries.</text>
-          <rect class="panel" x="930" y="345" width="520" height="210" rx="12" />
-          <text class="label" x="965" y="388">Fulton tableau condition</text>
-          <text class="quote green-text" x="965" y="430">"weakly increasing across each row"</text>
-          <text class="quote blue-text" x="965" y="472">"strictly increasing down each column"</text>
-          <text class="source" x="965" y="520">Fulton, Notation, p. 2</text>
+          <text class="stage-title" x="920" y="220">Semi-standard Young Tableau</text>
+          <text class="small" x="920" y="264">A filling that obeys the row and column rules.</text>
+          <rect class="panel" x="900" y="315" width="635" height="285" rx="12" />
+          <text class="definition-term" x="935" y="360">Semi-standard Young tableau</text>
+          <text class="definition-line" x="935" y="405">A semi-standard Young tableau is a filling whose rows</text>
+          <text class="definition-line" x="935" y="443">are weakly increasing from left to right, and whose</text>
+          <text class="definition-line" x="935" y="481">columns are strictly increasing from top to bottom.</text>
+          <text class="definition-note green-text" x="935" y="538">Rows: weakly increasing (≤). Columns: strictly increasing (&lt;).</text>
+          <text class="source" x="935" y="574">In this example, shape(T) = (4, 3, 3, 2).</text>
         </g>
 
         <g id="fillingTexts" class="fade">
           <text class="stage-title" x="940" y="245">Fill the diagram</text>
           <text class="small" x="940" y="292">The entries fly into the Young diagram.</text>
-          <text class="rule green-text" x="940" y="395">Rows may repeat: ≤</text>
-          <text class="rule blue-text" x="940" y="450">Columns must increase: &lt;</text>
+          <rect class="panel" x="900" y="340" width="600" height="245" rx="12" />
+          <text class="definition-term" x="935" y="385">Filling</text>
+          <text class="definition-line" x="935" y="430">A filling of a Young diagram assigns a positive</text>
+          <text class="definition-line" x="935" y="468">integer to each box of the diagram.</text>
+          <text class="rule green-text" x="935" y="526">Rows may repeat: ≤</text>
+          <text class="rule blue-text" x="1210" y="526">Columns: &lt;</text>
         </g>
 
         <g id="semistandardTexts" class="fade">
           <text class="stage-title" x="910" y="220">This is a semi-standard Young tableau</text>
           <text class="small" x="910" y="270">The numbers have flown into a Young diagram and obey the tableau rules.</text>
-          <rect class="panel" x="910" y="325" width="555" height="295" rx="12" />
-          <text class="label" x="945" y="370">Why semi-standard?</text>
-          <text class="small" x="945" y="413">Rows are weakly increasing, so equality is allowed.</text>
-          <text class="rule red-text" x="945" y="463">1 ≤ 1 and 3 ≤ 3</text>
-          <text class="small" x="945" y="514">Columns still strictly increase from top to bottom.</text>
-          <text class="tiny" x="945" y="570">Fulton calls these tableaux; common terminology calls</text>
-          <text class="tiny" x="945" y="596">them semi-standard Young tableaux.</text>
+          <rect class="panel" x="900" y="315" width="620" height="340" rx="12" />
+          <text class="definition-term" x="935" y="360">Why semi-standard?</text>
+          <text class="definition-line" x="935" y="404">Rows are weakly increasing, so equality is allowed.</text>
+          <text class="rule red-text" x="935" y="458">1 ≤ 1 and 3 ≤ 3</text>
+          <text class="definition-line" x="935" y="510">Columns still strictly increase from top to bottom.</text>
+          <text class="definition-term blue-text" x="935" y="570">Shape</text>
+          <text class="definition-note" x="1035" y="570">shape(T) = (4, 3, 3, 2)</text>
+          <text class="source" x="935" y="625">Repeated entries make this semi-standard, not standard.</text>
         </g>
 
         <g id="explodedTexts" class="fade">
@@ -448,8 +476,8 @@
           <text class="small" x="970" y="382">Columns are strictly increasing: only &lt; downward.</text>
           <text class="small red-text" x="970" y="424">Red marks show repeated row entries.</text>
           <text class="label" x="970" y="490">Standard Young tableau</text>
-          <text class="small" x="970" y="530">Entries are "numbers from 1 to n,</text>
-          <text class="small" x="970" y="562">each occurring once."</text>
+          <text class="definition-line" x="970" y="532">Entries are 1, 2, ..., n,</text>
+          <text class="definition-line" x="970" y="570">each appearing exactly once.</text>
           <text class="small" x="970" y="602">So standard tableaux do not allow repeats.</text>
           <text class="source" x="970" y="792">Fulton, Notation, pp. 2-3</text>
         </g>
@@ -466,20 +494,13 @@
 
         <g id="subsetTexts" class="fade">
           <text class="stage-title" x="120" y="200">Standard is a special case</text>
-          <text class="small" x="120" y="245">Every standard Young tableau satisfies the semi-standard rules.</text>
-          <text class="small" x="120" y="282">The extra standard condition is: entries are 1, ..., n and each appears once.</text>
           <circle class="subset-outer" cx="645" cy="535" r="235" />
-          <text class="rule green-text" x="645" y="398" text-anchor="middle">Semi-Standard</text>
-          <text class="rule green-text" x="645" y="436" text-anchor="middle">Young Tableaux</text>
-          <text class="small" x="645" y="486" text-anchor="middle">rows weakly increase</text>
-          <text class="small" x="645" y="520" text-anchor="middle">columns strictly increase</text>
+          <text class="rule green-text" x="645" y="430" text-anchor="middle">Semi-Standard</text>
+          <text class="rule green-text" x="645" y="470" text-anchor="middle">Young Tableaux</text>
           <circle class="subset-inner" cx="645" cy="640" r="115" />
-          <text class="rule blue-text" x="645" y="618" text-anchor="middle">Standard</text>
-          <text class="small" x="645" y="656" text-anchor="middle">1, ..., n exactly once</text>
+          <text class="rule blue-text" x="645" y="620" text-anchor="middle">Standard</text>
+          <text class="rule blue-text" x="645" y="660" text-anchor="middle">Young Tableaux</text>
           <text class="formula" x="1128" y="444">SYT ⊂ SSYT</text>
-          <text class="small" x="1128" y="500">Strict rows imply weak rows.</text>
-          <text class="small" x="1128" y="540">No repeats is an extra restriction.</text>
-          <text class="source" x="1128" y="615">Fact check: true under the convention used here.</text>
         </g>
 
         <defs>
@@ -533,11 +554,11 @@
       diagram: ["Young Diagram", "A partition drawn as left-justified rows of boxes."],
       filling: ["Young Tableau", "A Young diagram becomes a tableau once entries are filled in."],
       tableau: ["Young Tableau", "The filled shape must obey row and column rules."],
-      semistandard: ["Semi-Standard", "A semi-standard Young tableau has weak rows and strict columns."],
-      ssytExamples: ["Semi-Standard", "Examples with weak row increase and strict column increase."],
-      exploded: ["Semi-Standard", "The ≤ signs explain why repeated row entries are allowed."],
-      standardExamples: ["Standard", "A standard Young tableau uses 1 to n, each occurring exactly once."],
-      subset: ["Standard", "A standard tableau is a special semi-standard tableau."],
+      semistandard: ["Semi-Standard Young Tableau", "A semi-standard Young tableau has weak rows and strict columns."],
+      ssytExamples: ["Semi-Standard Young Tableau", "Examples with weak row increase and strict column increase."],
+      exploded: ["Semi-Standard Young Tableau", "The ≤ signs explain why repeated row entries are allowed."],
+      standardExamples: ["Standard Young Tableau", "A standard Young tableau uses 1 to n, each occurring exactly once."],
+      subset: ["Standard Young Tableau", "A standard tableau is a special semi-standard tableau."],
     };
     const repeatedRowCells = new Set(["0,0", "0,1", "1,1", "1,2"]);
     const rowColors = ["#2563eb", "#16a34a", "#0d9488", "#f97316"];
@@ -913,6 +934,11 @@
       });
     }
 
+    function initialStageIndex() {
+      const requestedStage = Number.parseInt(new URLSearchParams(window.location.search).get("stage"), 10);
+      return Number.isFinite(requestedStage) ? requestedStage : 0;
+    }
+
     initCells();
     initStorageLabels();
     initRowLabels();
@@ -921,7 +947,7 @@
     initStandardMini();
     initExampleLayers();
     initDots();
-    goTo(0);
+    goTo(initialStageIndex());
 
     document.querySelector("#nextBtn").addEventListener("click", () => {
       stop();
